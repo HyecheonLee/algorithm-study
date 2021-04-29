@@ -1,4 +1,4 @@
-package datastructure
+package datastructure.MyStack
 
 /**
  * User: hyecheon lee
