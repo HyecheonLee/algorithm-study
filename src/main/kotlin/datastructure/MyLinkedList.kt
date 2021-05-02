@@ -7,34 +7,70 @@ package datastructure.MyLinkedList
  */
 class MyLinkedList {
     private var head: Node? = null
-    private var last: Node? = null
+    private var tail: Node? = null
     fun add(data: Int) {
         if (head == null) {
             head = Node(data)
-            last = head
+            tail = head
         } else {
-            last?.next = Node(data)
-            last = last?.next
+            val currentLastNode = tail
+            tail = Node(data, prev = currentLastNode)
+            currentLastNode?.next = tail
         }
     }
+
+    fun addAfter(data: Int, beforeData: Int) {
+        val searchNode = searchNode(beforeData)
+        if (searchNode == null) add(data)
+        else {
+            val newNode = Node(9, prev = searchNode, next = searchNode.next)
+            searchNode.next = newNode
+            newNode.next?.prev = newNode
+        }
+    }
+
+    fun addBefore(data: Int, afterData: Int) {
+        val searchNode = searchNode(afterData)
+        if (searchNode == null) add(data)
+        else {
+            val newNode = Node(9, prev = searchNode.prev, next = searchNode)
+            searchNode.prev = newNode
+            newNode.prev?.next = newNode
+        }
+    }
+
+    private fun searchNode(data: Int): Node? {
+        var node = head
+        while (node != null) {
+            if (node.data == data) {
+                return node
+            }
+            node = node.next
+        }
+        return null
+    }
+
 
     fun del(data: Int) {
         if (head == null) return
         if (data == head!!.data) {
             head = head!!.next
+            head?.prev = null
             return
         }
         var node = head!!
         while (node.next != null) {
             if (node.next!!.data == data) {
-                if (node.next == last) {
-                    last = node
+                if (node.next == tail) {
+                    tail = node
                 }
                 node.next = node.next!!.next
+                node.next?.prev = node
                 break
             }
             node = node.next!!
         }
+
     }
 
     fun desc() {
@@ -43,12 +79,26 @@ class MyLinkedList {
             print("${node.data}, ")
             node = node.next
         }
+        println()
+    }
+
+    fun reversDesc() {
+        var node = tail
+        while (node != null) {
+            print("${node.data}, ")
+            node = node.prev
+        }
     }
 
     data class Node(
         val data: Int,
+        var prev: Node? = null,
         var next: Node? = null
-    )
+    ) {
+        override fun toString(): String {
+            return "Node(data=$data)"
+        }
+    }
 }
 
 fun main() {
@@ -56,18 +106,24 @@ fun main() {
     for (data in 1..10) {
         myLinkedList.add(data)
     }
-    myLinkedList.desc()
-    println()
+//    myLinkedList.desc()
     myLinkedList.del(10)
-    myLinkedList.desc()
-    println()
+//    myLinkedList.desc()
     myLinkedList.add(11)
-    myLinkedList.desc()
-    println()
+//    myLinkedList.desc()
     myLinkedList.del(1)
-    myLinkedList.desc()
-    println()
+//    myLinkedList.desc()
     myLinkedList.del(5)
+//    myLinkedList.desc()
+//    println()
+//    myLinkedList.reversDesc()
+    println("===========================")
+    myLinkedList.addAfter(13, 6)
     myLinkedList.desc()
-    println()
+    myLinkedList.addAfter(14, 1)
+    myLinkedList.desc()
+    myLinkedList.addBefore(16, 11)
+    myLinkedList.desc()
+    myLinkedList.addBefore(17, 120)
+    myLinkedList.desc()
 }
