@@ -32,46 +32,43 @@ class MyTree {
     }
 
     private fun nodeChange(oldNode: Node, newNode: Node?) {
-        if (newNode != null) {
-            oldNode.left?.parentNode = newNode
-            oldNode.right?.parentNode = newNode
-            if (oldNode.left?.data != newNode.data) {
-                newNode.left = oldNode.left
-            }
-            if (oldNode.right?.data != newNode.data) {
-                newNode.right = oldNode.right
-            }
-            newNode.parentNode = oldNode.parentNode
-            if (oldNode.parentNode != null) {
-                if (oldNode.parentNode!!.data < newNode.data) {
-                    oldNode.parentNode!!.right = newNode
-                } else {
-                    oldNode.parentNode!!.left = newNode
-                }
-            }
+        val parentNode = oldNode.parentNode!!
+        if (newNode == null) {
+            if (parentNode.left == oldNode) parentNode.left = null
+            if (parentNode.right == oldNode) parentNode.right = null
+            return
+        }
+        newNode.parentNode = parentNode
+        if (parentNode.left == oldNode) {
+            parentNode.left = newNode
+        }
+        if (parentNode.right == oldNode) {
+            parentNode.right = newNode
+        }
+        if (oldNode.left != newNode) {
+            newNode.left = oldNode.left
+            newNode.left?.parentNode = newNode
+        }
+        if (oldNode.right != newNode) {
+            newNode.right = oldNode.right
+            newNode.right?.parentNode = newNode
         }
     }
 
     fun delete(data: Int) {
         val searchNode = search(data) ?: return
-        val parentNode = searchNode.parentNode!!
-        if (isTerminalNode(searchNode)) {
-            nodeChange(searchNode, null)
-
-        }
-        if (isOneLeafNode(searchNode)) {
-            nodeChange(searchNode, searchNode.right ?: searchNode.left)
-        }
+        if (isTerminalNode(searchNode)) nodeChange(searchNode, null)
+        if (isOneLeafNode(searchNode)) nodeChange(searchNode, searchNode.right ?: searchNode.left)
         if (isTwoLeafNode(searchNode)) {
-            var node = searchNode.right
-            while (node != null) {
-                if (node.left == null) {
-                    node.parentNode!!.left = null
+            var changeNode = searchNode.right
+            while (changeNode != null) {
+                if (changeNode.left == null) {
+                    changeNode.parentNode!!.left = null
                     break
                 }
-                node = node.left
+                changeNode = changeNode.left
             }
-            nodeChange(searchNode, node)
+            nodeChange(searchNode, changeNode)
         }
     }
 
@@ -158,15 +155,24 @@ fun main() {
     myTree.insert(8)
     myTree.insert(16)
     myTree.insert(23)
-    myTree.insert(25)
-//    myTree.desc()
+
+
     myTree.delete(15)
     val search = myTree.search(16)
-    println(search)
-    myTree.delete(8)
-    val search1 = myTree.search(7)
-    println(search1)
+    println("${search?.parentNode?.data}  는 30이다")
+    println("${search?.left?.data}  는 7이다")
+    println("${search?.right?.data}  는 20이다")
+    println("${search?.right?.left}  는 null이다")
+    println("=================================")
     myTree.delete(6)
-    val search2 = myTree.search(7)
-    println(search2)
+    val search2 = myTree.search(5)
+    println("${search2?.parentNode?.data}  는 7이다")
+    println("${search2?.parentNode?.left?.data}  는 5이다")
+    println("${search2?.left}  는 null 이다")
+    println("${search2?.right}  는 null 이다")
+    println("=================================")
+    myTree.delete(5)
+    val search3 = myTree.search(7)
+    println("${search3?.left}  는 null 이다")
+    println("${search3?.right?.data}  는 8 이다")
 }
