@@ -7,7 +7,6 @@ package datastructure
  */
 class MyHeap {
     private val heap = arrayListOf<Int>()
-    private var size: Int = 0
 
     init {
         heap.add(-1)
