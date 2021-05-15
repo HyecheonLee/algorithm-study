@@ -11,9 +11,13 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.github.microutils:kotlin-logging:1.12.5'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
